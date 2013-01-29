@@ -5,9 +5,9 @@
    Authors:         Miguel Cazares
                     Stephen Chan
 
-   Contributors:    Azadeh Razaghian
+   Contributor:     Azadeh Razaghian
 
-   Build interface: g++ -o psh psh.c
+   Build interface: gcc -o psh psh.c
    Run interface:   ./psh [OPTIONAL ARGUMENT]
 
    Optional Argument: prompt to be printed
@@ -29,29 +29,7 @@
 #include<sys/wait.h>
 #include<signal.h>
 #include<fcntl.h>
-
-#define CMDSIZE 300    // Maximum # of characters allowed for a command
-#define MAXPRC 2      // Maximum # of processes allowed to run in background
-
-// Error check macro 
-#define CHECK(CALL)\
-   if((CALL) < 0 ) {\
-     perror(#CALL);\
-     printf("\n");\
-       exit(1);\
-     }\
-
-/* GLOBAL VARIABLE DECLARATION & INITIALIZATION */
-bool bg;  	           // background flag
-bool fg;	           // foregrund flag
-
-pid_t fg_pid;	       // process id of foreground process
-pid_t bg_pid;          // process id of background process
-
-pid_t main_pid;        // process id of this program
-pid_t shell_pid;       // process id of the shell running this program
-
-pid_t bproc[MAXPRC];   // background pid array
+#include "psh.h"
 
 // Function: init_bproc()
 //
@@ -481,10 +459,8 @@ int main (int argc, char** argv)
 
          while(wait(&status) != fg_pid);
 
-         // Note: this block of code is commented out because the functionality
-         //       is not listed in assignment instructions. Comment out if you
-         //       wish to see exit statuses for foreground processes          
-/*       if(WIFEXITED(status))
+         // show exit statuses for foreground processes          
+       if(WIFEXITED(status))
           {
              printf("Foreground process exited normally with  status: %d\n", WEXITSTATUS(status));
           }
@@ -496,7 +472,7 @@ int main (int argc, char** argv)
           {
              printf("Foreground process was stopped with signal: %d\n", WSTOPSIG(status));
           }
-*/  
+  
        }
        else // process is a background
        {
